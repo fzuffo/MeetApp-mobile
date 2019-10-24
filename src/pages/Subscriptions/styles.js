@@ -3,30 +3,28 @@ import Button from '~/components/Button';
 
 export const Container = styled.View`
   flex: 1;
-  align-items: center;
 `;
 
-export const Date = styled.Text`
-  align-self: center;
-  font-weight: bold;
-  font-size: 20px;
-  color: #fff;
-  margin-top: 35px;
-  margin-bottom: 35px;
+export const SubscriptionsFlatList = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+})`
+  flex: 1;
+  width: auto;
+  margin: 20px 20px 0;
 `;
 
 export const Card = styled.View`
-  flex: 1;
   height: auto;
-  max-width: 100%;
+  width: 100%;
   border-radius: 4px;
   background: #fff;
-  margin: 0 20px 20px 20px;
+  margin-bottom: 20px;
 `;
 
 export const ImageBanner = styled.Image`
-  max-height: 150px;
-  max-width: 100%;
+  height: 150px;
+  width: 100%;
+  background-color: #999;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 `;
@@ -38,13 +36,18 @@ export const Title = styled.Text`
   color: #333;
 `;
 
-export const Details = styled.Text`
-  margin: 0 0 10px 40px;
+export const Details = styled.View`
+  flex-direction: row;
+  margin: 0 0 10px 20px;
+`;
+
+export const TextInfo = styled.Text`
   font-size: 13px;
   color: #999;
+  margin-left: 5px;
 `;
 
 export const SubmitButton = styled(Button)`
-  margin: 20px;
+  margin: 15px 20px 20px 20px;
   background-color: #d44059;
 `;
