@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Text } from 'react-native';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
@@ -21,6 +22,8 @@ import {
   Details,
   TextInfo,
   SubscriptionsFlatList,
+  TextEmpty,
+  Empty,
 } from './styles';
 
 export default function Subscriptions() {
@@ -59,40 +62,46 @@ export default function Subscriptions() {
     <Background>
       <Header />
       <Container>
-        <SubscriptionsFlatList
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          data={subscriptions}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <Card>
-              <ImageBanner source={{ uri: item.Meetup.File.url }} />
+        {subscriptions.length > 0 ? (
+          <SubscriptionsFlatList
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            horizontal={false}
+            showsVerticalScrollIndicator={false}
+            data={subscriptions}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Card>
+                <ImageBanner source={{ uri: item.Meetup.File.url }} />
 
-              <Title>{item.Meetup.title}</Title>
+                <Title>{item.Meetup.title}</Title>
 
-              <Details>
-                <Icon name="event" size={14} color="#999" />
-                <TextInfo>{item.dateInfo}</TextInfo>
-              </Details>
+                <Details>
+                  <Icon name="event" size={14} color="#999" />
+                  <TextInfo>{item.dateInfo}</TextInfo>
+                </Details>
 
-              <Details>
-                <Icon name="place" size={14} color="#999" />
-                <TextInfo>{item.Meetup.location}</TextInfo>
-              </Details>
+                <Details>
+                  <Icon name="place" size={14} color="#999" />
+                  <TextInfo>{item.Meetup.location}</TextInfo>
+                </Details>
 
-              <Details>
-                <Icon name="person" size={14} color="#999" />
-                <TextInfo>Organizador: {item.User.name}</TextInfo>
-              </Details>
+                <Details>
+                  <Icon name="person" size={14} color="#999" />
+                  <TextInfo>Organizador: {item.User.name}</TextInfo>
+                </Details>
 
-              <SubmitButton onPress={() => handleCancel(item.id)}>
-                Cancelar inscrição
-              </SubmitButton>
-            </Card>
-          )}
-        />
+                <SubmitButton onPress={() => handleCancel(item.id)}>
+                  Cancelar inscrição
+                </SubmitButton>
+              </Card>
+            )}
+          />
+        ) : (
+          <Empty>
+            <TextEmpty>Nenhuma inscrição</TextEmpty>
+          </Empty>
+        )}
       </Container>
     </Background>
   );

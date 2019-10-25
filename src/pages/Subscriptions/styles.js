@@ -51,3 +51,13 @@ export const SubmitButton = styled(Button)`
   margin: 15px 20px 20px 20px;
   background-color: #d44059;
 `;
+
+export const Empty = styled.View`
+  align-items: center;
+  margin-top: 50px;
+`;
+
+export const TextEmpty = styled.Text`
+  color: #fff;
+  font-size: 20px;
+`;
