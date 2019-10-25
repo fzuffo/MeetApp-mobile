@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 
 import api from '~/services/api';
 
-import { createSubscriptionRequest } from '~/store/modules/subscriptions/actions';
+import { createSubscriptionRequest } from '~/store/modules/subscription/actions';
 
-import { format, addDays, subDays } from 'date-fns';
+import { addDays, subDays, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import Background from '~/components/Background';
@@ -33,11 +33,11 @@ export default function Dashboard({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [page, setPage] = useState(1);
   const [meetups, setMeetups] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
-  const dateFormatted = useMemo(
-    () => format(date, "d 'de' MMMM", { locale: pt }),
-    [date]
-  );
+  const dateTitle = useMemo(() => format(date, "d 'de' MMMM", { locale: pt }), [
+    date,
+  ]);
   const dateParamApi = useMemo(
     () => format(date, 'yyyy-MM-dd', { locale: pt }),
     [date]
@@ -52,10 +52,17 @@ export default function Dashboard({ navigation }) {
         },
       });
 
-      setMeetups(response.data);
+      const newData = response.data.map(meetup => ({
+        ...meetup,
+        dateInfo: format(new Date(meetup.date), "dd 'de' MMMM', às 'H'h' ", {
+          locale: pt,
+        }),
+      }));
+      setRefreshing(false);
+      setMeetups(newData);
     }
     loadMeetups();
-  }, [date]);
+  }, [date, refreshing]);
 
   function handlePrevDay() {
     setDate(subDays(date, 1));
@@ -67,7 +74,10 @@ export default function Dashboard({ navigation }) {
 
   function handleSubscription(id) {
     dispatch(createSubscriptionRequest(id));
-    navigation.navigate('Subscriptions');
+  }
+
+  function handleRefresh() {
+    setRefreshing(true);
   }
 
   return (
@@ -81,7 +91,7 @@ export default function Dashboard({ navigation }) {
             color="#fff"
             onPress={handlePrevDay}
           />
-          <DateText>{dateFormatted}</DateText>
+          <DateText>{dateTitle}</DateText>
           <Icon
             name="chevron-right"
             size={36}
@@ -91,7 +101,9 @@ export default function Dashboard({ navigation }) {
         </DateTitle>
 
         <DashboardFlatList
-          // horizontal={false}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          horizontal={false}
           data={meetups}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
@@ -101,7 +113,7 @@ export default function Dashboard({ navigation }) {
 
               <Details>
                 <Icon name="event" size={14} color="#999" />
-                <TextInfo>{item.date}</TextInfo>
+                <TextInfo>{item.dateInfo}</TextInfo>
                 {/* 24 de Julho, às 20h */}
               </Details>
 
@@ -115,9 +127,14 @@ export default function Dashboard({ navigation }) {
                 <Icon name="person" size={14} color="#999" />
                 <TextInfo>Organizador: {item.User.name}</TextInfo>
               </Details>
-              <SubmitButton onPress={() => handleSubscription(item.id)}>
-                Realizar inscrição
-              </SubmitButton>
+
+              {!item.past ? (
+                <SubmitButton onPress={() => handleSubscription(item.id)}>
+                  Realizar inscrição
+                </SubmitButton>
+              ) : (
+                <SubmitButton past={item.past}>Realizar inscrição</SubmitButton>
+              )}
             </Card>
           )}
         />

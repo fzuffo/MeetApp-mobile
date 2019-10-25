@@ -65,4 +65,6 @@ export const TextInfo = styled.Text`
 
 export const SubmitButton = styled(Button)`
   margin: 15px 20px 20px 20px;
+
+  opacity: ${props => (props.past ? 0.6 : 1)};
 `;

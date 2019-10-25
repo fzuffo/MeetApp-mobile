@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
 
 import api from '~/services/api';
-import { cancelSubscription } from '~/store/modules/subscriptions/actions';
+import { cancelSubscriptionRequest } from '~/store/modules/subscription/actions';
+import { format } from 'date-fns-tz';
+
+import pt from 'date-fns/locale/pt';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -22,20 +25,34 @@ import {
 
 export default function Subscriptions() {
   const dispatch = useDispatch();
+  const updateSubscription = useSelector(action => action.subscription);
+
   const [subscriptions, setSubscriptions] = useState('');
+  const [refreshing, setRefreshing] = useState(true);
 
   useEffect(() => {
     async function loadSubscriptions() {
       const response = await api.get('meetups/subscriptions');
 
-      setSubscriptions(response.data);
+      const newData = response.data.map(m => ({
+        ...m,
+        dateInfo: format(new Date(m.Meetup.date), "dd 'de' MMMM', às 'H'h' ", {
+          locale: pt,
+        }),
+      }));
+      setRefreshing(false);
+      setSubscriptions(newData);
     }
 
     loadSubscriptions();
-  }, []);
+  }, [refreshing, updateSubscription]);
 
   function handleCancel(id) {
-    dispatch(cancelSubscription(id));
+    dispatch(cancelSubscriptionRequest(id));
+  }
+
+  function handleRefresh() {
+    setRefreshing(true);
   }
 
   return (
@@ -43,6 +60,8 @@ export default function Subscriptions() {
       <Header />
       <Container>
         <SubscriptionsFlatList
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
           horizontal={false}
           showsVerticalScrollIndicator={false}
           data={subscriptions}
@@ -51,18 +70,16 @@ export default function Subscriptions() {
             <Card>
               <ImageBanner source={{ uri: item.Meetup.File.url }} />
 
-              <Title>{item.title}</Title>
+              <Title>{item.Meetup.title}</Title>
 
               <Details>
                 <Icon name="event" size={14} color="#999" />
-                <TextInfo>{item.Meetup.date}</TextInfo>
-                {/* <TextInfo>24 de Julho, às 20h</TextInfo> */}
+                <TextInfo>{item.dateInfo}</TextInfo>
               </Details>
 
               <Details>
                 <Icon name="place" size={14} color="#999" />
                 <TextInfo>{item.Meetup.location}</TextInfo>
-                {/* <TextInfo>Rua Guilherme Gembala, 260</TextInfo> */}
               </Details>
 
               <Details>
