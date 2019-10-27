@@ -61,7 +61,7 @@ export default function Subscriptions() {
     <Background>
       <Header />
       <Container>
-        {subscriptions > 0 ? (
+        {subscriptions.length > 0 ? (
           <SubscriptionsFlatList
             refreshing={refreshing}
             onRefresh={handleRefresh}

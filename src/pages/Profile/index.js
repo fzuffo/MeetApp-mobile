@@ -17,6 +17,13 @@ import {
   LogoutButton,
 } from './styles';
 
+import * as Yup from 'yup';
+
+const schema = Yup.object().shape({
+  name: Yup.string().required('Campo obrigatório'),
+  email: Yup.string().required('Campo obrigatório'),
+});
+
 export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
@@ -32,7 +39,7 @@ export default function Profile() {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
 
-  const loading = useSelector(state => state.auth.loading);
+  // const loading = useSelector(state => state.auth.loading);
 
   useEffect(() => {
     setOldPassword('');
@@ -60,7 +67,7 @@ export default function Profile() {
     <Background>
       <Header />
       <Container>
-        <Form>
+        <Form schema={schema}>
           <FormInput
             autoCorrect={false}
             autoCapitalize="none"
@@ -120,9 +127,7 @@ export default function Profile() {
             onChangeText={setConfirmPassword}
           />
 
-          <SubmitButton loading={loading} onPress={handleSubmit}>
-            Salvar Perfil
-          </SubmitButton>
+          <SubmitButton onPress={handleSubmit}>Salvar Perfil</SubmitButton>
         </Form>
 
         <LogoutButton onPress={handleLogout}>Sair do Meetapp</LogoutButton>
