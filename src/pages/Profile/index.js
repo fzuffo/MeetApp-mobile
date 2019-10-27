@@ -17,13 +17,6 @@ import {
   LogoutButton,
 } from './styles';
 
-import * as Yup from 'yup';
-
-const schema = Yup.object().shape({
-  name: Yup.string().required('Campo obrigatório'),
-  email: Yup.string().required('Campo obrigatório'),
-});
-
 export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
@@ -38,8 +31,6 @@ export default function Profile() {
   const oldPasswordRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
-
-  // const loading = useSelector(state => state.auth.loading);
 
   useEffect(() => {
     setOldPassword('');
@@ -67,7 +58,7 @@ export default function Profile() {
     <Background>
       <Header />
       <Container>
-        <Form schema={schema}>
+        <Form>
           <FormInput
             autoCorrect={false}
             autoCapitalize="none"
@@ -76,6 +67,7 @@ export default function Profile() {
             onSubmitEditing={() => emailRef.current.focus()}
             value={name}
             onChangeText={setName}
+            required
           />
 
           <FormInput
