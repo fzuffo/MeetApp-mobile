@@ -68,3 +68,10 @@ export const SubmitButton = styled(Button)`
 
   opacity: ${props => (props.past ? 0.6 : 1)};
 `;
+
+export const EmptyText = styled.Text`
+  color: #999;
+  margin-top: 24px;
+  align-self: center;
+  font-size: 16px;
+`;

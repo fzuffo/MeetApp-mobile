@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Text } from 'react-native';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
 
 import api from '~/services/api';
 import { cancelSubscriptionRequest } from '~/store/modules/subscription/actions';
-import { format } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 import pt from 'date-fns/locale/pt';
 
@@ -62,14 +61,14 @@ export default function Subscriptions() {
     <Background>
       <Header />
       <Container>
-        {subscriptions.length > 0 ? (
+        {subscriptions > 0 ? (
           <SubscriptionsFlatList
             refreshing={refreshing}
             onRefresh={handleRefresh}
             horizontal={false}
             showsVerticalScrollIndicator={false}
             data={subscriptions}
-            keyExtractor={item => item.id}
+            keyExtractor={item => String(item.id)}
             renderItem={({ item }) => (
               <Card>
                 <ImageBanner source={{ uri: item.Meetup.File.url }} />
@@ -99,7 +98,7 @@ export default function Subscriptions() {
           />
         ) : (
           <Empty>
-            <TextEmpty>Nenhuma inscrição</TextEmpty>
+            <TextEmpty>Nenhuma inscrição realizada</TextEmpty>
           </Empty>
         )}
       </Container>

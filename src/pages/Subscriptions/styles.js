@@ -58,6 +58,8 @@ export const Empty = styled.View`
 `;
 
 export const TextEmpty = styled.Text`
-  color: #fff;
-  font-size: 20px;
+  color: #999;
+  margin-top: 24px;
+  align-self: center;
+  font-size: 16px;
 `;
